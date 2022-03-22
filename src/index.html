@@ -5,18 +5,25 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homework 11</title>
+    <title>Images Gallery</title>
+    <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
-    <form class="search-form" id="search-form">
-        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
-        <button type="submit">Search</button>
-    </form>
+    <header class="page-header">
+        <form class="search-form" id="search-form">
+            <div class="form-elem">
+                <input type="text" class='input-form' name="searchQuery" autocomplete="off" placeholder="Search images..." />
+                <button type="submit" class="form-btn">Search</button>
+            </div>
+        </form>
+    </header>
 
-    <div class="gallery"></div>
+    <main class="gallery-container">
+        <div class="gallery"></div>
     
-    <button type="button" class="load-more hidden">Load more</button>
+        <button type="button" class="load-more hidden">Load more</button>
+    </main>
 
     <script src="index.js"></script>
 </body>

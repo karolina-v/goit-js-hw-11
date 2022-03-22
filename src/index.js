@@ -1,5 +1,8 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 
 // refs
 const form = document.querySelector('#search-form');
@@ -22,7 +25,7 @@ const API_URL = 'https://pixabay.com/api';
 const API_KEY = '25854357-73cc9e97f6c573caedd14922c';
 const options = 'image_type=photo&orientation=horizontal&safesearch=true';
 const per_page = 40;
-const BASE_URL = `${API_URL}/?key=${API_KEY}&per-page=${per_page}&${options}`;
+const BASE_URL = `${API_URL}/?key=${API_KEY}&per_page=${per_page}&${options}`;
 
 
 async function fetchImage(dataInput) {
@@ -36,10 +39,6 @@ async function fetchImage(dataInput) {
 }
 
 // events
-function onFormInput(e) {
-  dataInput = e.target.value.trim();
-}
-
 function onFormSubmit(e) {
     e.preventDefault();
 
@@ -48,32 +47,39 @@ function onFormSubmit(e) {
 
     if (dataInput !== '') {
         fetchImage(dataInput).then(makeGallery).catch(noResults).finally(() => form.reset());
-  }
+    }
   page = 1;
+}
+
+function onFormInput(e) {
+  dataInput = e.target.value.trim();
 }
 
 function onLoadClick() {
     page += 1;
-
     fetchImage(dataInput, page).then(makeGallery).catch(noResults);
+    pageScroll();   
 }
 
 
 // image card
 function makeGallery(images) {
     if (images.totalHits === 0) {
-        noResults(images);
+        noResults();
     } else {
         renderImageCard(images);
         loadBtn.hidden = false;
     }
 
-    if (images.hits.length < per_page && images.hits.length !== 0) {
+    if (images.hits.length < per_page && images.totalHits !== 0) {
         finishGallery();
         loadBtn.hidden = true;
     }
-}
 
+    if (page === 1 && images.totalHits !== 0) {
+        allResults(images);
+    }
+}
 
 
 function renderImageCard(images) {
@@ -83,28 +89,46 @@ function renderImageCard(images) {
             <div class="photo-card">
                 <a class="gallery__link" href="${largeImageURL}">
                     <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+                </a>
                     <div class="info">
                         <p class="info-item">
-                            <b>Likes ${likes}</b>
+                            <b>Likes</b>
+                            <span>${likes}</span>
                         </p>
                         <p class="info-item">
-                            <b>Views ${views}</b>
+                            <b>Views</b>
+                            <span>${views}</span>
                         </p>
                         <p class="info-item">
-                            <b>Comments ${comments}</b>
+                            <b>Comments</b>
+                            <span>${comments}</span>
                         </p>
                         <p class="info-item">
-                            <b>Downloads ${downloads}</b>
+                            <b>Downloads</b>
+                            <span>${downloads}</span>
                         </p>
                     </div>
-                </a>
+                
             </div>`;
     })
     .join("");
     
     gallery.innerHTML = markup;
+
+    let lightbox = new SimpleLightbox('.gallery a');
+    lightbox.on('show.simplelightbox', function () {});
+    lightbox.refresh();
 }
 
+// scroll
+function pageScroll() {
+    const { height: cardHeight } = gallery.firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+});
+}
 
 
 // console
@@ -117,6 +141,9 @@ function finishGallery() {
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
 }
 
+function allResults(images) {
+    Notiflix.Notify.success(`Hooray! We found ${images.totalHits} images.`);
+}
 
 // export default class феч {
 //     constructor() {
