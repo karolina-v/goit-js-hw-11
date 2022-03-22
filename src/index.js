@@ -16,7 +16,6 @@ loadBtn.hidden = true;
 
 let dataInput = '';
 let page = 1;
-let timerId = null;
 
 // api
 const API_URL = 'https://pixabay.com/api';
@@ -26,44 +25,60 @@ const per_page = 40;
 const BASE_URL = `${API_URL}/?key=${API_KEY}&per-page=${per_page}&${options}`;
 
 
-async function fetchImage(input, page) {
+async function fetchImage(dataInput) {
     try {
-        const response = await axios.get(`${BASE_URL}&page=${page}&q=${input}`);
-        return await response.json();
-        console.log(response.json());
+        const response = await axios.get(`${BASE_URL}&page=${page}&q=${dataInput}`);
+        console.log(response);
+        return await response.data;
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
     }
 }
 
-
 // events
+function onFormInput(e) {
+  dataInput = e.target.value.trim();
+}
+
 function onFormSubmit(e) {
     e.preventDefault();
 
-    loadBtn.hidden = true;
     gallery.innerHTML = '';
+    loadBtn.hidden = true;
 
     if (dataInput !== '') {
-        fetchImage(dataInput).then(renderImageCard).catch(noResults).finally(() => form.reset());
+        fetchImage(dataInput).then(makeGallery).catch(noResults).finally(() => form.reset());
   }
   page = 1;
 }
 
-function onFormInput(e) {
-  dataInput = e.target.value();
-}
-
 function onLoadClick() {
     page += 1;
-    // ????
+
+    fetchImage(dataInput, page).then(makeGallery).catch(noResults);
 }
 
 
 // image card
+function makeGallery(images) {
+    if (images.totalHits === 0) {
+        noResults(images);
+    } else {
+        renderImageCard(images);
+        loadBtn.hidden = false;
+    }
+
+    if (images.hits.length < per_page && images.hits.length !== 0) {
+        finishGallery();
+        loadBtn.hidden = true;
+    }
+}
+
+
+
 function renderImageCard(images) {
-  const markup = images
-    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
+  const markup = images.hits
+    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
       return `
             <div class="photo-card">
                 <a class="gallery__link" href="${largeImageURL}">
@@ -97,3 +112,38 @@ function noResults() {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
 }
 
+
+function finishGallery() {
+    Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+}
+
+
+// export default class феч {
+//     constructor() {
+//         this.запрос = ``;
+//         this.page = 1;
+//         this.perp_age = 40;
+//         this.totalHits = 1;
+//     }
+    
+//     async getPhotos() {
+//         const url = `${URL}?key=${API_KEY}&q=${this.запрос}&${OPTIONS}&page=${this.page}&per_page=${this.per_page}`;
+//         try {
+//             const response = await axios.get(url); this.page += 1;
+//             return await response.data.hits;
+//         }
+//         catch (error) {
+//             console.log(error)
+//         }
+//     }
+    
+//     pageReset() {
+//         this.page = 1;
+//     }
+//     getзапрос() {
+//         return this.request;
+//     }
+//     setзапрос(новый запрос) {
+//         this.request = newReply;
+//     }
+// }
