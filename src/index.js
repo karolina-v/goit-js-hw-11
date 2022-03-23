@@ -48,8 +48,10 @@ function onFormSubmit(e) {
     if (dataInput !== '') {
         fetchImage(dataInput).then(makeGallery).catch(noResults).finally(() => form.reset());
     }
-  page = 1;
+//   page = 1;
 }
+
+
 
 function onFormInput(e) {
   dataInput = e.target.value.trim();
@@ -57,8 +59,13 @@ function onFormInput(e) {
 
 function onLoadClick() {
     page += 1;
-    fetchImage(dataInput, page).then(makeGallery).catch(noResults);
-    pageScroll();   
+
+    fetchImage(dataInput, page)
+        .then(images => {
+            makeGallery(images);
+            pageScroll();
+        })
+        .catch(noResults);
 }
 
 
@@ -144,33 +151,3 @@ function finishGallery() {
 function allResults(images) {
     Notiflix.Notify.success(`Hooray! We found ${images.totalHits} images.`);
 }
-
-// export default class феч {
-//     constructor() {
-//         this.запрос = ``;
-//         this.page = 1;
-//         this.perp_age = 40;
-//         this.totalHits = 1;
-//     }
-    
-//     async getPhotos() {
-//         const url = `${URL}?key=${API_KEY}&q=${this.запрос}&${OPTIONS}&page=${this.page}&per_page=${this.per_page}`;
-//         try {
-//             const response = await axios.get(url); this.page += 1;
-//             return await response.data.hits;
-//         }
-//         catch (error) {
-//             console.log(error)
-//         }
-//     }
-    
-//     pageReset() {
-//         this.page = 1;
-//     }
-//     getзапрос() {
-//         return this.request;
-//     }
-//     setзапрос(новый запрос) {
-//         this.request = newReply;
-//     }
-// }

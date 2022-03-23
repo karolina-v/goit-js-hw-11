@@ -105,3 +105,25 @@ img {
   text-decoration: none;
   color: inherit;
 }
+
+.info {
+  display: flex;
+  padding: 0px;
+  font-size: 10px;
+  margin: 10px 5px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: center;
+  width: 70px;
+  margin: 0;
+  position: relative;
+  padding-top: 20px;
+  height: 40px;
+}
+
+p.info-item b {
+  position: absolute;
+  top: 0;
+}
