@@ -7,7 +7,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 // refs
 const form = document.querySelector('#search-form');
 const input = document.querySelector('[name=searchQuery]');
-const button = document.querySelector('[type=submit]');
+// const button = document.querySelector('[type=submit]');
 const gallery = document.querySelector('.gallery');
 const loadBtn = document.querySelector('.load-more');
 
@@ -48,7 +48,8 @@ function onFormSubmit(e) {
     if (dataInput !== '') {
         fetchImage(dataInput).then(makeGallery).catch(noResults).finally(() => form.reset());
     }
-//   page = 1;
+
+    page = 1;
 }
 
 
@@ -119,8 +120,9 @@ function renderImageCard(images) {
             </div>`;
     })
     .join("");
-    
-    gallery.innerHTML = markup;
+
+
+    gallery.insertAdjacentHTML('beforeend', markup);
 
     let lightbox = new SimpleLightbox('.gallery a');
     lightbox.on('show.simplelightbox', function () {});
